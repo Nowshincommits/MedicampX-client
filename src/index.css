@@ -1,16 +1,57 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-.font-poppins {
-    font-family: 'Poppins', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-poppins: "Poppins", sans-serif;
+  --font-inter: "Inter", sans-serif;
+
+  /* OKLCH Color System */
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0 0);
+
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0 0);
+
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0 0);
+
+  --color-primary: oklch(0.62 0.21 259);
+  --color-primary-foreground: oklch(0.985 0 0);
+
+  --color-secondary: oklch(0.97 0.01 255);
+  --color-secondary-foreground: oklch(0.145 0 0);
+
+  --color-muted: oklch(0.97 0.01 255);
+  --color-muted-foreground: oklch(0.55 0.02 255);
+
+  --color-accent: oklch(0.97 0.01 255);
+  --color-accent-foreground: oklch(0.145 0 0);
+
+  --color-destructive: oklch(0.63 0.24 29);
+  --color-destructive-foreground: oklch(0.985 0 0);
+
+  --color-border: oklch(0.92 0.01 255);
+  --color-input: oklch(0.92 0.01 255);
+  --color-ring: oklch(0.62 0.21 259);
+
+  /* Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
 }
 
-.font-inter {
-    font-family: 'Inter', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
