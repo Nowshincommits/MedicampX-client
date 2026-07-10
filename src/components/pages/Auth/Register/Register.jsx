@@ -1,5 +1,12 @@
-import registerAnimation from "../../../../assets/Lotties/register.lottie";
+import { useContext, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Link } from "react-router";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+import registerAnimation from "../../../../assets/Lotties/register.lottie";
+import { AuthContext } from "../../../../Contexts/AuthContext/AuthContext";
+
+import { User, Mail, Lock, Phone, HeartPulse, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,24 +17,66 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { User, Mail, Lock, Phone, HeartPulse } from "lucide-react";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Register = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const { createUser } = useContext(AuthContext);
 
-    // Registration logic here
-    console.log("Register submitted");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      gender: "",
+    },
+  });
+
+  const password = watch("password");
+
+  const handleSignUp = (data) => {
+    const { email, password, ...rest } = data;
+
+    createUser(email, password)
+      .then((result) => {
+        console.log(result.user);
+
+        const userProfile = {
+          email,
+          ...rest,
+        };
+
+        console.log("User Profile:", userProfile);
+
+        reset();
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error);
+      });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
       <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-12 items-center">
-        {/* Left Section */}
-        <div className="hidden lg:flex flex-col items-center justify-center">
+        {/* LEFT SIDE */}
+        <div className="lg:flex flex-col items-center justify-center mx-auto">
           <DotLottieReact
             src={registerAnimation}
             loop
@@ -35,9 +84,10 @@ const Register = () => {
             style={{ width: "500px" }}
           />
 
-          <div className="max-w-md text-center space-y-4 mt-4">
+          <div className="max-w-md text-center space-y-4 mt-4 mx-auto">
             <h2 className="text-4xl font-bold text-cyan-700">
-              Welcome to MediCampX
+              Welcome to <span className="text-black">MediCamp</span>
+              <span className="text-primary">X</span>
             </h2>
 
             <p className="text-gray-600 leading-relaxed">
@@ -47,7 +97,7 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Register Card */}
+        {/* RIGHT SIDE */}
         <Card className="w-full max-w-md mx-auto shadow-xl border-0">
           <CardHeader className="text-center space-y-3">
             <div className="flex justify-center">
@@ -65,128 +115,193 @@ const Register = () => {
             </CardDescription>
           </CardHeader>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(handleSignUp)}>
             <CardContent className="space-y-4">
-              {/* Full Name */}
+              {/* NAME */}
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-
+                <Label>Full Name</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-
                   <Input
-                    id="name"
-                    type="text"
-                    placeholder="Enter your full name"
                     className="pl-10"
-                    required
+                    {...register("name", {
+                      required: "Name is required",
+                    })}
+                    placeholder="John Doe"
                   />
                 </div>
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name.message}</p>
+                )}
               </div>
 
-              {/* Email */}
+              {/* EMAIL */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-
+                <Label>Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-
                   <Input
-                    id="email"
                     type="email"
-                    placeholder="Enter your email address"
                     className="pl-10"
-                    required
+                    {...register("email", {
+                      required: "Email is required",
+                    })}
+                    placeholder="you@example.com"
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                )}
               </div>
 
-              {/* Phone */}
+              {/* PHONE */}
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-
+                <Label>Phone</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-
                   <Input
-                    id="phone"
-                    type="tel"
+                    className="pl-10"
+                    {...register("phone", {
+                      required: "Phone is required",
+                    })}
                     placeholder="+880 1XXXXXXXXX"
-                    className="pl-10"
-                    required
                   />
                 </div>
+                {errors.phone && (
+                  <p className="text-red-500 text-sm">{errors.phone.message}</p>
+                )}
               </div>
 
-              {/* Password */}
+              {/* DOB */}
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label>DOB</Label>
+                <Input
+                  type="date"
+                  {...register("dob", {
+                    required: "DOB is required",
+                  })}
+                />
+                {errors.dob && (
+                  <p className="text-red-500 text-sm">{errors.dob.message}</p>
+                )}
+              </div>
+
+              {/* GENDER */}
+              <div className="space-y-2">
+                <Label>Gender</Label>
+
+                <Controller
+                  name="gender"
+                  control={control}
+                  rules={{ required: "Gender is required" }}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+
+                {errors.gender && (
+                  <p className="text-red-500 text-sm">
+                    {errors.gender.message}
+                  </p>
+                )}
+              </div>
+
+              {/* PASSWORD */}
+              <div className="space-y-2">
+                <Label>Password</Label>
 
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
 
                   <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter password"
-                    className="pl-10"
-                    required
+                    type={showPassword ? "text" : "password"}
+                    className="pl-10 pr-10"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Min 6 characters",
+                      },
+                    })}
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
+
+                {errors.password && (
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
-              {/* Confirm Password */}
+              {/* CONFIRM PASSWORD */}
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">
-                  Confirm Password
-                </Label>
+                <Label>Confirm Password</Label>
 
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
 
                   <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm password"
-                    className="pl-10"
-                    required
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="pl-10 pr-10"
+                    {...register("confirmPassword", {
+                      required: "Confirm password is required",
+                      validate: (value) =>
+                        value === password || "Passwords do not match",
+                    })}
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-3 text-gray-400"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
                 </div>
+
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-sm">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
               </div>
             </CardContent>
 
             <CardFooter className="flex flex-col gap-3 mt-4">
-              <Button
-                type="submit"
-                className="w-full bg-cyan-600 hover:bg-cyan-700"
-              >
+              <Button type="submit" className="w-full">
                 Create Account
               </Button>
-
-              <Button
-                variant="outline"
-                type="button"
-                className="w-full"
-              >
-                Continue with Google
-              </Button>
-
-              <p className="text-sm text-center text-muted-foreground">
+              
+              <p className="text-sm text-center">
                 Already have an account?
-                <button
-                  type="button"
-                  className="ml-1 text-cyan-700 font-semibold hover:underline"
-                >
+                <Link to="/login" className="text-cyan-700 ml-1">
                   Login
-                </button>
-              </p>
-
-              <p className="text-xs text-center text-muted-foreground">
-                By creating an account, you agree to our Terms of Service and
-                Privacy Policy.
+                </Link>
               </p>
             </CardFooter>
           </form>
+          <SocialLogin></SocialLogin>
         </Card>
       </div>
     </div>
