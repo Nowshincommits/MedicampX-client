@@ -64,7 +64,11 @@ const Navbar = () => {
                       {user?.email}
                     </p>
                   </div>
-
+                  <div>
+                    <button to="/dashboard" className="block px-4 py-3 w-full hover:bg-accent">
+                      Dashboard
+                    </button>
+                  </div>
                   <button
                     onClick={handleSignOut}
                     className="w-full px-4 py-3 text-left text-red-600 hover:bg-red-50"
