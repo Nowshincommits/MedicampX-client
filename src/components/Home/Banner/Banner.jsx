@@ -2,19 +2,8 @@ import Success1 from "../../../assets/Success/Success stories-1.png"
 import Success2 from "../../../assets/Success/Success stories-2.png"
 import Success3 from "../../../assets/Success/Success stories-3.png"
 import { Carousel } from 'antd';
-const slideStyle = {
-  height: "500px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  background: "#364d79",
-};
 
-const imageStyle = {
-  maxWidth: "100%",
-  maxHeight: "100%",
-  objectFit: "contain",
-};
+
 const images = [Success1, Success2, Success3];
 
 const Banner = () => {

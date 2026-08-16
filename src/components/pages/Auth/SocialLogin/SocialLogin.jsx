@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/Contexts/AuthContext/AuthContext";
+import useAxios from "@/hooks/useAxios";
 import { GoogleOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 
 const SocialLogin = () => {
   console.log("Social login component rendered");
     const { signInWithGoogle } = useContext(AuthContext);
+    const axiosInstance = useAxios();
     const handleGoogleLogin = (e) => {
       e.preventDefault();
       console.log("Google login clicked");
@@ -20,7 +22,8 @@ const SocialLogin = () => {
           createdAt: new Date().toISOString(),
           last_log_in: new Date().toISOString()
         };
-        console.log(currentUser);
+        const res = await axiosInstance.post("/users", currentUser);
+        console.log("user update info",res.data);
       })
       .catch((error) => {
         console.error("Google Sign-In Error:", error);

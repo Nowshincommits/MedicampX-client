@@ -29,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import useAxios from "@/hooks/useAxios";
 
 const Register = () => {
   const { createUser } = useContext(AuthContext);
@@ -48,11 +49,12 @@ const Register = () => {
       gender: "",
     },
   });
-
+ 
+  const axiosInstance = useAxios();
   const password = watch("password");
 
   const handleSignUp = (data) => {
-    const { email, password, ...rest } = data;
+    const { email, password} = data;
 
     createUser(email, password)
       .then((result) => {
@@ -60,10 +62,12 @@ const Register = () => {
 
         const userProfile = {
           email,
-          ...rest,
+          role: "user",
+          createdAt: new Date().toISOString(),
+          last_login: new Date().toISOString()
         };
-
-        console.log("User Profile:", userProfile);
+      const userResponse = axiosInstance.post("/users", userProfile);        
+        console.log("User Profile:", userResponse.data);
 
         reset();
       })
