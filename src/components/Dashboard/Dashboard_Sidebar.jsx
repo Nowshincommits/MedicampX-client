@@ -5,6 +5,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { NavLink } from "react-router";
+import useUserRoles from "../../hooks/useUserRoles";
 
 import {
   Sidebar,
@@ -39,6 +40,7 @@ const organizerItems = [
     icon: UsersRound,
   },
 ];
+
 const participantItems = [
   {
     title: "Participant Profile",
@@ -59,9 +61,12 @@ const participantItems = [
     title: "Payment History",
     url: "/dashboard/payment-history",
     icon: ClipboardList,
-  }
+  },
 ];
+
 const DashboardSidebar = () => {
+  const { role, roleLoading } = useUserRoles();
+
   return (
     <Sidebar className="border-r bg-background">
       <SidebarContent className="px-3 py-5">
@@ -72,25 +77,50 @@ const DashboardSidebar = () => {
 
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {organizerItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-11">
-                    <NavLink
-                      to={item.url}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-lg px-3 font-medium transition-all ${
-                          isActive
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`
-                      }
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {role === "organizer" &&
+                !roleLoading &&
+                organizerItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild className="h-11">
+                      <NavLink
+                        to={item.url}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 rounded-lg px-3 font-medium transition-all ${
+                            isActive
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          }`
+                        }
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                {
+                  role === "user" &&
+                  !roleLoading &&
+                  participantItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild className="h-11">
+                        <NavLink
+                          to={item.url}
+                          className={({ isActive }) =>
+                            `flex items-center gap-3 rounded-lg px-3 font-medium transition-all ${
+                              isActive
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            }`
+                          }
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span>{item.title}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                }
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

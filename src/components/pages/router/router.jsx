@@ -4,6 +4,7 @@ import Home from "../../Home/Home";
 import Register from "../Auth/Register/Register";
 import SignIn from "../Auth/SignIn/SignIn";
 import DashboardLayout from "@/components/Layouts/DashboardLayout";
+import Forbidden from "../Forbidden/Forbidden";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
             {
                 path: "/dashboard",
                 Component: DashboardLayout,
+            },
+            {
+                path: "/forbidden",
+                Component: Forbidden
             }
         ]
     }
