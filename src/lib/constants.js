@@ -16,6 +16,6 @@ export const navLinks = [
 export const Buttons = [
     {
         name: "Join Us",
-        path: "/login"
+        path: "/signup"
     },
 ]

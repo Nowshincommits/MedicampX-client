@@ -65,9 +65,9 @@ const Navbar = () => {
                     </p>
                   </div>
                   <div>
-                    <button to="/dashboard" className="block px-4 py-3 w-full hover:bg-accent">
+                    <NavLink to="/dashboard" className="block px-4 py-3 w-full hover:bg-accent">
                       Dashboard
-                    </button>
+                    </NavLink>
                   </div>
                   <button
                     onClick={handleSignOut}

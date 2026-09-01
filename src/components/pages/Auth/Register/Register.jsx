@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import registerAnimation from "../../../../assets/Lotties/register.lottie";
@@ -29,11 +29,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SocialLogin from "../SocialLogin/SocialLogin";
-import useAxios from "@/hooks/useAxios";
+import useAxios from "../../../../hooks/useAxios";
 
 const Register = () => {
   const { createUser } = useContext(AuthContext);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -49,27 +48,33 @@ const Register = () => {
       gender: "",
     },
   });
- 
+
   const axiosInstance = useAxios();
   const password = watch("password");
-
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
   const handleSignUp = (data) => {
-    const { email, password} = data;
+    const { email, password } = data;
 
     createUser(email, password)
-      .then((result) => {
+      .then(async (result) => {
         console.log(result.user);
 
         const userProfile = {
-          email,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          dob: data.dob,
+          gender: data.gender,
           role: "user",
           createdAt: new Date().toISOString(),
-          last_login: new Date().toISOString()
+          last_login: new Date().toISOString(),
         };
-      const userResponse = axiosInstance.post("/users", userProfile);        
+        const userResponse = await axiosInstance.post("/users", userProfile);
         console.log("User Profile:", userResponse.data);
-
         reset();
+        navigate(from);
       })
       .catch((error) => {
         console.error("Error creating user:", error);
@@ -296,7 +301,7 @@ const Register = () => {
               <Button type="submit" className="w-full">
                 Create Account
               </Button>
-              
+
               <p className="text-sm text-center">
                 Already have an account?
                 <Link to="/login" className="text-cyan-700 ml-1">

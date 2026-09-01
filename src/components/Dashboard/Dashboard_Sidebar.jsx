@@ -26,7 +26,7 @@ const organizerItems = [
   },
   {
     title: "Add A Camp",
-    url: "/dashboard/add-camp",
+    url: "/dashboard/add-a-camp",
     icon: PlusCircle,
   },
   {
@@ -68,7 +68,7 @@ const DashboardSidebar = () => {
   const { role, roleLoading } = useUserRoles();
 
   return (
-    <Sidebar className="border-r bg-background">
+    <Sidebar className="border-r bg-background  min-h-fit">
       <SidebarContent className="px-3 py-5">
         <SidebarGroup>
           <SidebarGroupLabel className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

@@ -1,22 +1,28 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset,
+} from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
 import DashboardSidebar from "../Dashboard/Dashboard_Sidebar";
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => {
   return (
-    <div>
-      <SidebarProvider>
+    <SidebarProvider>
+      <div className="flex w-full min-h-[calc(100vh-136px)]">
         <DashboardSidebar />
-        <main className="w-full p-4">
-          {/* Adds a button to collapse/expand the sidebar */}
-          <SidebarTrigger />
 
-          {/* Renders your page content */}
-          {children}
-        </main>
-      </SidebarProvider>
-      <Outlet />
-    </div>
+        <SidebarInset className="min-w-0 flex-1">
+          <div className="flex items-center h-14 border-b w-5 px-4">
+            <SidebarTrigger />
+          </div>
+
+          <main className="p-4">
+            <Outlet />
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
