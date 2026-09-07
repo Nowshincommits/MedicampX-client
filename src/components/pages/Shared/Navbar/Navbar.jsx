@@ -1,14 +1,14 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router";
 import { Buttons, navLinks } from "../../../../lib/constants";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Logo from "../Logo/Logo";
-import { AuthContext } from "@/Contexts/AuthContext/AuthContext";
+import useAuth from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut } = useAuth();
 
   const navLinkStyles = ({ isActive }) =>
     `transition-colors duration-200 font-medium ${

@@ -19,7 +19,9 @@ const AddACamp = () => {
       campName: "",
       image: "",
       campFees: "",
-      dateTime: "",
+      campDate: "",
+      campTime: "",
+      ampm: "",
       location: "",
       healthcareProfessionalName: "",
       participantCount: 0,
@@ -33,13 +35,17 @@ const AddACamp = () => {
     const campData = {
       ...data,
       campFees: Number(data.campFees),
+      campTime: `${data.campTime} ${data.ampm}`,
       participantCount: 0,
     };
+
+    // Remove AM/PM because it has already been combined with campTime
+    delete campData.ampm;
 
     console.log("Camp Data:", campData);
 
     try {
-      // Loading Alert
+      // Loading alert
       Swal.fire({
         title: "Adding Camp...",
         text: "Please wait while we create your medical camp.",
@@ -51,7 +57,7 @@ const AddACamp = () => {
         },
       });
 
-      // Send data to backend
+      // Send camp data to backend
       const campResponse = await axiosInstance.post(
         "/camp-details",
         campData
@@ -59,7 +65,7 @@ const AddACamp = () => {
 
       console.log("Camp Response:", campResponse.data);
 
-      // Success Alert
+      // Success alert
       await Swal.fire({
         icon: "success",
         title: "Camp Added!",
@@ -72,7 +78,6 @@ const AddACamp = () => {
     } catch (error) {
       console.error("Error adding camp:", error);
 
-      // Error Alert
       Swal.fire({
         icon: "error",
         title: "Failed to Add Camp",
@@ -88,17 +93,25 @@ const AddACamp = () => {
     <div className="max-w-3xl mx-auto p-6">
       {/* Page Header */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold">Add A Camp</h1>
+        <h1 className="text-3xl font-bold">
+          Add A Camp
+        </h1>
 
         <p className="text-muted-foreground mt-2">
-          Create a new medical camp by providing the information below.
+          Create a new medical camp by providing the
+          information below.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+      >
         {/* Camp Name */}
         <div className="space-y-2">
-          <Label htmlFor="campName">Camp Name</Label>
+          <Label htmlFor="campName">
+            Camp Name
+          </Label>
 
           <Input
             id="campName"
@@ -115,9 +128,11 @@ const AddACamp = () => {
           )}
         </div>
 
-        {/* Image */}
+        {/* Camp Image */}
         <div className="space-y-2">
-          <Label htmlFor="image">Camp Image</Label>
+          <Label htmlFor="image">
+            Camp Image
+          </Label>
 
           <Input
             id="image"
@@ -137,7 +152,9 @@ const AddACamp = () => {
 
         {/* Camp Fees */}
         <div className="space-y-2">
-          <Label htmlFor="campFees">Camp Fees</Label>
+          <Label htmlFor="campFees">
+            Camp Fees
+          </Label>
 
           <Input
             id="campFees"
@@ -160,28 +177,93 @@ const AddACamp = () => {
           )}
         </div>
 
-        {/* Date & Time */}
+        {/* Camp Date */}
         <div className="space-y-2">
-          <Label htmlFor="dateTime">Date & Time</Label>
+          <Label htmlFor="campDate">
+            Camp Date
+          </Label>
 
           <Input
-            id="dateTime"
-            type="datetime-local"
-            {...register("dateTime", {
-              required: "Date and time are required",
+            id="campDate"
+            type="date"
+            {...register("campDate", {
+              required: "Camp date is required",
             })}
           />
 
-          {errors.dateTime && (
+          {errors.campDate && (
             <p className="text-sm text-destructive">
-              {errors.dateTime.message}
+              {errors.campDate.message}
             </p>
           )}
         </div>
 
+        {/* Camp Time */}
+        <div className="space-y-2">
+          <Label>
+            Camp Time
+          </Label>
+
+          <div className="flex gap-2">
+            {/* Time */}
+            <Input
+              type="text"
+              placeholder="10:30"
+              className="flex-1"
+              {...register("campTime", {
+                required: "Camp time is required",
+                pattern: {
+                  value:
+                    /^(0?[1-9]|1[0-2]):[0-5][0-9]$/,
+                  message:
+                    "Enter time in 12-hour format, e.g. 10:30",
+                },
+              })}
+            />
+
+            {/* AM / PM */}
+            <select
+              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              {...register("ampm", {
+                required: "Please select AM or PM",
+              })}
+            >
+              <option value="">
+                AM/PM
+              </option>
+
+              <option value="AM">
+                AM
+              </option>
+
+              <option value="PM">
+                PM
+              </option>
+            </select>
+          </div>
+
+          {errors.campTime && (
+            <p className="text-sm text-destructive">
+              {errors.campTime.message}
+            </p>
+          )}
+
+          {errors.ampm && (
+            <p className="text-sm text-destructive">
+              {errors.ampm.message}
+            </p>
+          )}
+
+          <p className="text-sm text-muted-foreground">
+            Enter time like 10:30 and select AM or PM.
+          </p>
+        </div>
+
         {/* Location */}
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="location">
+            Location
+          </Label>
 
           <Input
             id="location"
@@ -207,14 +289,21 @@ const AddACamp = () => {
           <Input
             id="healthcareProfessionalName"
             placeholder="Enter healthcare professional name"
-            {...register("healthcareProfessionalName", {
-              required: "Healthcare professional name is required",
-            })}
+            {...register(
+              "healthcareProfessionalName",
+              {
+                required:
+                  "Healthcare professional name is required",
+              }
+            )}
           />
 
           {errors.healthcareProfessionalName && (
             <p className="text-sm text-destructive">
-              {errors.healthcareProfessionalName.message}
+              {
+                errors.healthcareProfessionalName
+                  .message
+              }
             </p>
           )}
         </div>
@@ -234,14 +323,16 @@ const AddACamp = () => {
           />
 
           <p className="text-sm text-muted-foreground">
-            Participant count starts at 0 and will increase as
-            participants register.
+            Participant count starts at 0 and will
+            increase as participants register.
           </p>
         </div>
 
         {/* Description */}
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            Description
+          </Label>
 
           <Textarea
             id="description"
@@ -260,7 +351,10 @@ const AddACamp = () => {
         </div>
 
         {/* Submit */}
-        <Button type="submit" className="w-full">
+        <Button
+          type="submit"
+          className="w-full"
+        >
           Add Camp
         </Button>
       </form>

@@ -32,7 +32,7 @@ import SocialLogin from "../SocialLogin/SocialLogin";
 import useAxios from "../../../../hooks/useAxios";
 
 const Register = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -41,7 +41,6 @@ const Register = () => {
     handleSubmit,
     control,
     watch,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -54,6 +53,7 @@ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from || "/";
+   const [profilePic, setProfilePic] = useState("");
   const handleSignUp = (data) => {
     const { email, password } = data;
 
@@ -68,19 +68,26 @@ const Register = () => {
           dob: data.dob,
           gender: data.gender,
           role: "user",
+          profilePic: profilePic || "https://ui-avatars.com/api/?name=User&background=random",  
           createdAt: new Date().toISOString(),
           last_login: new Date().toISOString(),
         };
+         updateUserProfile({
+          displayName: data.name,
+          photoURL: profilePic || "https://ui-avatars.com/api/?name=User&background=random",
+         })
+          .then(() => {
+            console.log("profile name and picture updated");
+             navigate(from)
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         const userResponse = await axiosInstance.post("/users", userProfile);
         console.log("User Profile:", userResponse.data);
-        reset();
-        navigate(from);
-      })
-      .catch((error) => {
-        console.error("Error creating user:", error);
+      
       });
-  };
-
+    }
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
       <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-12 items-center">

@@ -7,6 +7,7 @@ import DashboardLayout from "../../Layouts/DashboardLayout";
 import PrivateRoutes from "../../../routes/PrivateRoutes";
 import Forbidden from "../Forbidden/Forbidden";
 import AddACamp from "@/components/pages/AddACamp/AddACamp";
+import AvailableCamps from "../../AvailableCamps/AvailableCamps";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/available-camps",
-        // Component: AvailableCamps
+        Component: AvailableCamps
       },
       {
         path: "/about-us",
