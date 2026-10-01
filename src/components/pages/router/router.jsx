@@ -8,6 +8,8 @@ import PrivateRoutes from "../../../routes/PrivateRoutes";
 import Forbidden from "../Forbidden/Forbidden";
 import AddACamp from "@/components/pages/AddACamp/AddACamp";
 import AvailableCamps from "../../AvailableCamps/AvailableCamps";
+import Payment from "../../Payment/Payment";
+import RegisteredCamps from "../../../components/pages/RegisteredCamps/RegisteredCamps";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -47,7 +49,19 @@ export const router = createBrowserRouter([
           <PrivateRoutes>
             <AddACamp />
           </PrivateRoutes>
-        ),
+        )
+      },
+      {
+        path: "/dashboard/registered-camps", 
+        element: (
+          <PrivateRoutes>
+            <RegisteredCamps />
+          </PrivateRoutes>
+        )
+      },
+      {
+       path: "/payment/:id",
+       Component: Payment
       },
       {
         path: "/forbidden",

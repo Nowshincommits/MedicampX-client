@@ -67,7 +67,7 @@ const Register = () => {
           phone: data.phone,
           dob: data.dob,
           gender: data.gender,
-          role: "user",
+          role: data.role,
           profilePic: profilePic || "https://ui-avatars.com/api/?name=User&background=random",  
           createdAt: new Date().toISOString(),
           last_login: new Date().toISOString(),

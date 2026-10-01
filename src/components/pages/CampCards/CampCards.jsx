@@ -29,7 +29,7 @@ import { AuthContext } from "../../../Contexts/AuthContext/AuthContext";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 import Swal from "sweetalert2";
-
+import { useNavigate } from "react-router";
 
 const CampCards = ({ camp }) => {
   const {
@@ -43,10 +43,12 @@ const CampCards = ({ camp }) => {
     organizer,
     campFees,
     healthcareProfessionalName,
+    participantCount,
   } = camp;
 
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
 
@@ -89,12 +91,15 @@ const CampCards = ({ camp }) => {
       phoneNumber: formData.phoneNumber,
       gender: formData.gender,
       emergencyContact: formData.emergencyContact,
+
+      // Payment status
+      paymentStatus: "pending",
     };
 
     try {
       Swal.fire({
-        title: "Joining Camp...",
-        text: "Please wait while we register you.",
+        title: "Registering...",
+        text: "Please wait while we process your registration.",
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,
@@ -103,29 +108,20 @@ const CampCards = ({ camp }) => {
         },
       });
 
+      // Save participant
       const response = await axiosSecure.post(
         "/participants",
         participantData
       );
 
       if (response.data.insertedId) {
-        await Swal.fire({
-          icon: "success",
-          title: "Successfully Joined!",
-          text: "You have successfully registered for this medical camp.",
-          confirmButtonText: "OK",
-        });
+        Swal.close();
 
-        // Reset form
-        setFormData({
-          age: "",
-          phoneNumber: "",
-          gender: "",
-          emergencyContact: "",
-        });
-
-        // Close dialog
+        // Close registration dialog
         setOpen(false);
+
+        // Go to payment page
+        navigate(`/payment/${_id}`);
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -143,7 +139,6 @@ const CampCards = ({ camp }) => {
 
   return (
     <Card className="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
-
       {/* Image Overlay */}
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
 
@@ -155,7 +150,6 @@ const CampCards = ({ camp }) => {
       />
 
       <CardHeader>
-
         {/* Availability Badge */}
         <CardAction>
           <Badge asChild variant="secondary">
@@ -167,75 +161,55 @@ const CampCards = ({ camp }) => {
         <CardTitle>{campName}</CardTitle>
 
         {/* Description */}
-        <CardDescription>
-          {description}
-        </CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
 
       <CardFooter className="flex flex-col gap-2">
-
         {/* Camp Information */}
         <div className="w-full text-sm text-muted-foreground">
-
-          {/* Location */}
           <p>
-            <span className="font-medium">
-              Location:
-            </span>{" "}
+            <span className="font-medium">Location:</span>{" "}
             {location}
           </p>
 
-          {/* Date */}
           <p>
-            <span className="font-medium">
-              Date:
-            </span>{" "}
+            <span className="font-medium">Date:</span>{" "}
             {campDate}
           </p>
 
-          {/* Time */}
           <p>
-            <span className="font-medium">
-              Time:
-            </span>{" "}
+            <span className="font-medium">Time:</span>{" "}
             {campTime}
           </p>
 
-          {/* Organizer */}
           {organizer && (
             <p>
-              <span className="font-medium">
-                Organizer:
-              </span>{" "}
+              <span className="font-medium">Organizer:</span>{" "}
               {organizer}
             </p>
           )}
+
+          <p>
+            <span className="font-medium">Fee:</span>{" "}
+            ৳{campFees}
+          </p>
+
+          <p>
+            <span className="font-medium">Participants:</span>{" "}
+            {participantCount || 0}
+          </p>
         </div>
 
         {/* Join Camp Dialog */}
         <Dialog open={open} onOpenChange={setOpen}>
-
-          {/* Join Camp Button */}
           <DialogTrigger asChild>
-            {/* {role === "user" && !roleLoading ? (
-              <Button className="w-full ">
+            <Button className="w-full">
               Join Camp
             </Button>
-            ) : (
-              <Button
-                className="w-full"
-              >
-                Manage Camp
-              </Button> */}
-               <Button className="w-full ">
-              Join Camp
-            </Button>
-            {/* )} */}
           </DialogTrigger>
 
           {/* Registration Modal */}
           <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-
             <DialogHeader>
               <DialogTitle>
                 Join Medical Camp
@@ -251,7 +225,6 @@ const CampCards = ({ camp }) => {
               onSubmit={handleSubmit}
               className="space-y-5"
             >
-
               {/* Camp Name */}
               <div className="space-y-2">
                 <Label htmlFor="campName">
@@ -425,7 +398,6 @@ const CampCards = ({ camp }) => {
 
               {/* Dialog Buttons */}
               <DialogFooter className="gap-2 sm:gap-0">
-
                 <Button
                   type="button"
                   variant="outline"
@@ -435,15 +407,12 @@ const CampCards = ({ camp }) => {
                 </Button>
 
                 <Button type="submit">
-                  Confirm & Join Camp
+                  Book
                 </Button>
-
               </DialogFooter>
-
             </form>
           </DialogContent>
         </Dialog>
-
       </CardFooter>
     </Card>
   );
