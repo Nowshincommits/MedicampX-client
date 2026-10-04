@@ -32,7 +32,10 @@ const RegisteredCamps = () => {
     enabled: !!user?.email,
 
     queryFn: async () => {
-      const res = await axios.get(`/camp-details/${user.email}`);
+      const res = await axios.get(
+        `/registered-camps/${user.email}`
+      );
+
       return res.data;
     },
   });
@@ -246,7 +249,7 @@ const RegisteredCamps = () => {
                             size="sm"
                             onClick={() =>
                               navigate(
-                                `/payment/${camp._id}`
+                                `/payment/${camp.campId}`
                               )
                             }
                           >

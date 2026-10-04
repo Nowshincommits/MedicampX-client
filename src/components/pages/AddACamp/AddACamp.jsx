@@ -337,7 +337,7 @@ const AddACamp = () => {
           <Textarea
             id="description"
             placeholder="Describe the medical camp..."
-            className="min-h-[140px]"
+            className="min-h-35"
             {...register("description", {
               required: "Description is required",
             })}
