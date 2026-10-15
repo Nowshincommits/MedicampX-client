@@ -37,42 +37,55 @@ const ParticipantProfile = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [profilePic, setProfilePic] = useState("");
+  const [role, setRole] = useState("");
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
 
-  // Get user information from MongoDB
+  // Load the logged-in user's profile from MongoDB
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user?.email) {
+      // setProfileLoading(false);
+      return;
+    }
 
     const loadProfile = async () => {
       try {
         setProfileLoading(true);
 
-        const res = await axiosSecure.get(`/users/${user.email}`);
-
-        setProfile(res.data);
-
-        setName(res.data?.name || user.displayName || "");
-        setPhone(res.data?.phone || "");
-        setProfilePic(
-          res.data?.profilePic || user.photoURL || ""
+        const res = await axiosSecure.get(
+          `/users/${user.email}`
         );
+
+        const userData = res.data;
+
+        setProfile(userData);
+        setName(userData?.name || user.displayName || "");
+        setPhone(userData?.phone || "");
+        setProfilePic(
+          userData?.profilePic || user.photoURL || ""
+        );
+
+        // Read the existing role without changing it
+        setRole(userData?.role || "");
       } catch (error) {
         console.error("Failed to load profile:", error);
 
-        // Fallback to Firebase information
         setName(user.displayName || "");
+        setPhone("");
         setProfilePic(user.photoURL || "");
+        setRole("");
       } finally {
         setProfileLoading(false);
       }
+      console.log("Profile role:", role);
     };
 
     loadProfile();
-  }, [user, axiosSecure]);
+  }, [user, axiosSecure, role]);
 
+  // Update editable profile information only
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -87,12 +100,15 @@ const ParticipantProfile = () => {
         photoURL: profilePic,
       });
 
-      // Update MongoDB
-      const res = await axiosSecure.patch(`/users/${user.email}`, {
-        name,
-        phone,
-        profilePic,
-      });
+      // Update MongoDB without changing the role
+      const res = await axiosSecure.patch(
+        `/users/${user.email}`,
+        {
+          name,
+          phone,
+          profilePic,
+        }
+      );
 
       console.log("Profile updated:", res.data);
 
@@ -124,6 +140,29 @@ const ParticipantProfile = () => {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="p-6 text-center">
+        Please log in to view your profile.
+      </div>
+    );
+  }
+
+  const displayName =
+    profile?.name || user.displayName || "User";
+
+  const displayPicture =
+    profile?.profilePic ||
+    user.photoURL ||
+    "https://avatar.vercel.sh/shadcn1";
+
+  const displayRole =
+    role === "organizer"
+      ? "Organizer"
+      : role === "user"
+        ? "Participant"
+        : "User";
+
   return (
     <div className="p-6">
       <Card className="mx-auto w-full max-w-2xl">
@@ -131,25 +170,19 @@ const ParticipantProfile = () => {
           <div className="flex items-center gap-5">
             {/* Profile Picture */}
             <img
-              src={
-                profile?.profilePic ||
-                user?.photoURL ||
-                "https://avatar.vercel.sh/shadcn1"
-              }
-              alt="Participant profile"
+              src={displayPicture}
+              alt="User profile"
               className="h-20 w-20 shrink-0 rounded-full border object-cover"
             />
 
             {/* Profile Information */}
             <div className="min-w-0 flex-1">
               <CardTitle className="text-xl">
-                {profile?.name ||
-                  user?.displayName ||
-                  "Participant Name"}
+                {displayName}
               </CardTitle>
 
               <CardDescription className="mt-1">
-                {user?.email}
+                {user.email}
               </CardDescription>
 
               {profile?.phone && (
@@ -158,8 +191,9 @@ const ParticipantProfile = () => {
                 </p>
               )}
 
+              {/* Read-only role badge */}
               <Badge variant="secondary" className="mt-2">
-                Participant
+                {displayRole}
               </Badge>
             </div>
 
@@ -181,7 +215,8 @@ const ParticipantProfile = () => {
 
                       <DialogDescription>
                         Update your personal information and
-                        contact details.
+                        contact details. Your account role
+                        cannot be changed here.
                       </DialogDescription>
                     </DialogHeader>
 
@@ -211,6 +246,7 @@ const ParticipantProfile = () => {
                             setName(e.target.value)
                           }
                           placeholder="Enter your name"
+                          required
                         />
                       </div>
 
@@ -222,7 +258,8 @@ const ParticipantProfile = () => {
 
                         <Input
                           id="email"
-                          value={user?.email || ""}
+                          type="email"
+                          value={user.email || ""}
                           disabled
                         />
                       </div>
@@ -235,6 +272,7 @@ const ParticipantProfile = () => {
 
                         <Input
                           id="phone"
+                          type="tel"
                           value={phone}
                           onChange={(e) =>
                             setPhone(e.target.value)
@@ -243,7 +281,7 @@ const ParticipantProfile = () => {
                         />
                       </div>
 
-                      {/* Profile Image */}
+                      {/* Profile Picture URL */}
                       <div className="space-y-2">
                         <Label htmlFor="profilePic">
                           Profile Image URL
@@ -251,6 +289,7 @@ const ParticipantProfile = () => {
 
                         <Input
                           id="profilePic"
+                          type="url"
                           value={profilePic}
                           onChange={(e) =>
                             setProfilePic(e.target.value)

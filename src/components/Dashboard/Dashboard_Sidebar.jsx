@@ -35,8 +35,8 @@ const organizerItems = [
     icon: ClipboardList,
   },
   {
-    title: "Registered Camps",
-    url: "/dashboard/registered-camps",
+    title: "Manage Registered Camps",
+    url: "/dashboard/manage-registered-camps",
     icon: UsersRound,
   },
 ];

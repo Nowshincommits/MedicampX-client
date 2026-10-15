@@ -9,7 +9,7 @@ const OrganiserRoutes = ({ children }) => {
   if (loading || roleLoading) {
     return <span className="loading loading-spinner loading-xl"></span>;
   }
-  if (!user || role !== "organiser") {
+  if (!user || role !== "organizer") {
     return <Navigate state={{ from: location.pathname}} to="/forbidden"></Navigate>;
   }
   return children;

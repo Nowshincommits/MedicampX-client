@@ -146,6 +146,7 @@ const PaymentForm = () => {
         const paymentData = {
           campId: id,
           userEmail: user.email,
+          campName: campData.campName,
           amount,
           transactionId: result.paymentIntent.id,
           paymentMethod: result.paymentIntent.payment_method_types,

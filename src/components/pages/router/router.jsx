@@ -12,6 +12,7 @@ import Payment from "../../Payment/Payment";
 import RegisteredCamps from "../../../components/pages/RegisteredCamps/RegisteredCamps";
 import ParticipantProfile from "../ParticipantProfile/ParticipantProfile";
 import PaymentHistory from "../PaymentHistory/PaymentHistory";
+import Analytics from "../Analytics/Analytics";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -46,6 +47,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "/dashboard/analytics",
+        element: (
+          <PrivateRoutes>
+            <Analytics />
+          </PrivateRoutes>
+        )
+      },
+      {
         path: "/dashboard/add-a-camp",
         element: (
           <PrivateRoutes>
@@ -74,6 +83,14 @@ export const router = createBrowserRouter([
        element: (
         <PrivateRoutes>
           <PaymentHistory />
+        </PrivateRoutes>
+       )
+      },
+      {
+       path: "/dashboard/organizer-profile",
+       element: (
+        <PrivateRoutes>
+          <ParticipantProfile />
         </PrivateRoutes>
        )
       },
