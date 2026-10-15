@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const ParticipantProfile = () => {
+const Profile = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
@@ -320,4 +320,4 @@ const ParticipantProfile = () => {
   );
 };
 
-export default ParticipantProfile;
+export default Profile;

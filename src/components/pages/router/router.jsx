@@ -10,9 +10,9 @@ import AddACamp from "@/components/pages/AddACamp/AddACamp";
 import AvailableCamps from "../../AvailableCamps/AvailableCamps";
 import Payment from "../../Payment/Payment";
 import RegisteredCamps from "../../../components/pages/RegisteredCamps/RegisteredCamps";
-import ParticipantProfile from "../ParticipantProfile/ParticipantProfile";
 import PaymentHistory from "../PaymentHistory/PaymentHistory";
 import Analytics from "../Analytics/Analytics";
+import Profile from "../ParticipantProfile/Profile";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -74,7 +74,7 @@ export const router = createBrowserRouter([
       path: "/dashboard/participant-profile",
       element: (
         <PrivateRoutes>
-          <ParticipantProfile />
+          <Profile />
         </PrivateRoutes>
       )    
       },
@@ -90,7 +90,7 @@ export const router = createBrowserRouter([
        path: "/dashboard/organizer-profile",
        element: (
         <PrivateRoutes>
-          <ParticipantProfile />
+          <Profile />
         </PrivateRoutes>
        )
       },
